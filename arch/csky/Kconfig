@@ -79,7 +79,7 @@ menu "Processor type and features"
 comment "Processor type"
 
 choice
-    prompt "CPU’s arch version"
+    prompt "CPU version"
     default CPU_CSKYV1
 
 config CPU_CSKYV1
@@ -287,8 +287,21 @@ config CMDLINE
 	  time by entering them here. As a minimum, you should specify the
 	  memory size and the root device (e.g., mem=64M root=/dev/nfs).
 
+choice
+        prompt "Board Support"
+        default CK6408EVB if CSKY
 
-source "arch/csky/gx3xxx/Kconfig"
+config  CK6408EVB
+        bool "CK6408EVB"
+        select USB_OHCI_BIG_ENDIAN_DESC
+
+config  CKM5208
+        bool "CKM5208"
+
+endchoice
+
+source "arch/csky/ck6408evb/Kconfig"
+source "arch/csky/ckm5208/Kconfig"
 
 endmenu
 

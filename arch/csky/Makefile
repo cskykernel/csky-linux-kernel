@@ -57,7 +57,8 @@ KBUILD_CFLAGS += -fsigned-char \
                 -DUTS_SYSNAME=\"linux\" -D__linux__ \
                 -DNO_TEXT_SECTIONS $(CPUTYPE) 
 
-machine-y := gx3xxx
+machine-$(CONFIG_CK6408EVB) := ck6408evb
+machine-$(CONFIG_CKM5208)   := ckm5208
 
 machdirs := $(patsubst %,arch/csky/%/,$(machine-y))
 
