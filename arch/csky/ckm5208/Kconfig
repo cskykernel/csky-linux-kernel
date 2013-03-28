@@ -1,0 +1,9 @@
+# arch/csky/ckm5208/Kconfig
+#
+# Copyright (C) 2011, C-SKY Microsystems Co., Ltd. (www.c-sky.com) 
+#
+# Licensed under GPLv2
+
+if CKM5208
+
+endif

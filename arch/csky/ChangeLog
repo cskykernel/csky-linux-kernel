@@ -1,0 +1,1220 @@
+2009-9-17 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/char/Kconfig (L124 - 168): 
+		Deal with warring when use command "make defconfig".
+
+2009-9-18 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/char/ck1000evb_serial.c (receive_chars): 
+		Revise the function of receive_chars() when deal with the receive 
+		status is overrun.
+
+2009-9-18 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/kernel/process.c (default_idle): 
+		Schedule has bug when config kernel preemption: the idle thread will 
+		output bug information to terminal. So correct the function of 
+		default_idle and let CPU enter wait mode.
+
+2009-9-22 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/config.c (config_BSP):
+		Add section attribute "__init" on this function.
+	* arch/csky/kernel/ints.c (init_IRQ):
+		Add section attribute "__init" on this function.
+
+2009-9-22 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/processor_mm.h (L102 -109):
+		Delete unused filed-----"struct thread_info info" in struct of 
+		thread_struct.
+
+2009-9-22 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/ (asm-offset.c):
+		Change the offset of thread_info in task_struct because the 
+		thread_struct has no filed info and task_struct.stack point to the 
+		current struct thread_info.
+
+2009-9-22 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/ (all source file):
+		Optimize the codes style. 
+
+2009-9-23 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/include/asm/ck610mmu.h:
+		correct each mmu control fuctions, use register "b" instead of "r" 
+		in case of confilction with r5.
+
+2009-9-23 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/include/asm/bitops_mm.h:
+		Optimize function ffz, use csky instructions to implement it.
+
+2009-9-23 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/include/asm/pgtable_mm.h:
+		Define Macro PMD_SHIFT 22 instead of (2 * PAGE_SHIFT - PTE_T_LOG2).
+
+2009-9-23 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/kernel/setup.c:
+	* arch/csky/kernel/head.S:
+		Rather than keep a global, we dedicate a register r0 to get current. 
+		So delete the variable _current_task and need not keeping it.
+
+2009-9-23 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/entry.S:
+		1 Rather than keep a global, we dedicate a register r0 to get current.
+		  So delete the variable _current_task and need not keeping it.
+		2 Also, optimize the method of getting current->thread_info, like below:
+			mov     r9, r0
+			bmaski  r10, THREADSIZE_MASK_BIT
+			andn    r9, r10
+
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/mm/dma-maping.c:
+		Add return valure infunction dma_map_single, dma_map_page and 
+		dma_mapping_error to delete compile warring.
+	
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/mm/init.c:
+		Add a export symbole.
+
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/lib/checksum.c:
+		Add 3 export symbole.
+
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/Makefile:
+		Add a object to sustain module load.
+
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/kernel/csky_ksyms.c:
+		Add some export symbole for module load.
+
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/module.c:
+		Deal witch module load of csky. We perfect the function of 
+		apply_relocate, apply_relocate_add and soon on.
+
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/module.h:
+		Change it to sustain module load.
+
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/elf.h:
+		Add csky relocation fiags such as 
+			#define R_CSKY_NONE               0
+			#define R_CSKY_32                 1
+
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/trap.c:
+		Let align exception to send SIGBUS signal.	
+
+2009-10-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/cacheflush_mm.h:
+		Optimize the function about cache flush.
+
+2009-10-22 Ye Yun <yun_ye@c-sky.com>
+
+	* drivers/net/Makefile:
+		Add line: obj-$(CONFIG_CSKYMAC) += cskymac.oRXBD_ERR_BITS   0xff
+
+	* drivers/net/Kconfig:
+		Add CSKYMAC config option under if NET_ETHERNET
+
+2009-10-22 Ye Yun <yun_ye@c-sky.com>
+
+	* driver/net/cskymac.c:
+		1 Displace dev->priv with netdev_priv(dev).
+		2 In func cksymac_rx, replace eth_copy_and_sum with 
+			skb_copy_to_linear_data.
+		3 In func cskymac_ether_init:
+			init_ethrdev --> alloc_etherdev;
+			del SET_MODULE_OWNER(dev);
+			replace netdev ops evaluating with a struct dev->netdev_ops=
+				&cskymac_ops, and cskymac_ops define&evaluate just
+				before func cskymac_ether_init;
+			ether_setup(dev) --> register_netdev(dev);
+		4 In func cskymac_open:
+			the third parameter of request_irq change to IRQF_DISABLED. 
+		
+	
+2009-10-22 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/include/asm/socket.h:
+		1 Undefine macro ARCH_HAS_SOCKET_TYPES, so use the generic sock_type.
+		2 Correct most of the macro to linux2.4 form.
+		3 Add macros:
+			#define SO_LINGER	13
+			/* To add :#define SO_REUSEPORT 15 */
+			#define SO_PASSCRED	16
+			#define SO_PEERCRED	17
+		  Delete macros:
+			#define SOCK_TYPE_MASK 0xf
+			#define SOCK_CLOEXEC	O_CLOEXEC
+			#define SOCK_NONBLOCK	O_NONBLOCK
+
+2009-10-22 Ye Yun <yun_ye@c-sky.com>
+
+	* driver/net/cskymac.c:
+		1. When init rings, map rx_skb->data to uncachable VM:
+			L247:dp->rx_skbs[i]->data = UNCACHE_ADDR(skb->data);
+		2. Remove func skymac_begin_auto_negotiation and  cskymac_get_stats
+			they are no use.
+		3. Big change for mac interrupt routine, new way:
+			Return type become irqreturn_t, del third parameter;
+			Int tx and tx err merge to the same routine;  rx, rx err and busy 
+				merge to the same routine;
+	 		So, cskymac_rx and cskymac_tx routine quite different.
+		4. Routine cskymac_start_xmit add clear_dcache_all() to make 
+			coherent between data cache and memory.
+	
+	* driver/net/cskymac.h:
+		Add macro:
+			TXBD_ERR_BITS   0x10f and
+			RXBD_ERR_BITS   0xff
+		for tx and rx BD error judge.
+
+2009-10-22 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/include/asm/page_mm.h:
+		Change macro name with part of UNCAC to UNCACHE.
+
+2009-10-22 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/mtd/maps/Kconfig:
+		Add csky norflash access support:
+			config MTD_CSKY_NORFLASH
+			tristate "Map driver for csky evb norflash"
+			...
+	* drivers/mtd/maps/Makefile:
+		Add csky norflash access support:
+			obj-$(CONFIG_MTD_CSKY_NORFLASH)	+= csky_norflash.o
+	* drivers/mtd/maps/csky_norflash.c:
+		Add the file to support csky norflash access. This file contain all 
+		need codes and you can change about hardware.
+
+2009-10-22 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/page_mm.h :
+		Add 2 macro to deal with kernel error when change RAM base phy-address.
+			#define PHY_OFFSET				CK_RAM_BASE
+			#define ARCH_PFN_OFFSET 		PFN_UP(PHY_OFFSET)
+
+2009-10-23 Ye Yun <yun_ye@c-sky.com>
+
+	* driver/net/cskymac.c:
+		1. Add netif_start_queue(dev) in func cskymac_open; 
+			add netif_stop_queue(dev) in func cskymac_close.
+		2. In cskymac_ops, add func cskymac_get_stats, remove 
+			func cksymac_set_macaddr
+		3. In cskymac_ether_init: Remove cskymac_stop() and 
+			replace kfree(dev) with free_netdev(dev), the later 
+			also done in cksymac_cleanup.
+		4. Replace func parameter cskymac* with net_device* 
+			in all funcs if could, expcept in cskymac_cleanup.
+		5. Remove routines below: cskymac_phyr_read, cskymac_phyr_write,
+			try_next_permutation, cskymac_timer.
+		6. Correct parameter of request_irq & free_irq:dp --> dev.
+
+2009-10-27 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/kernel/signal.c:
+		Complete func push_cache, which is called by 
+			setup_frame/setup_rt_frame after filling the sig frame in 
+			user stack with sys_sigreturn codes, to avoid codes only 
+			writed in dcache rather than memory, and CPU reads right 
+			instructions from the memory.
+
+2009-10-27 Ye Yun <yun_ye@c-sky.com>
+
+	* drivers/net/cskymac.c:
+		In func ckymac_tx: move line "skb = dp->tx_skbs[elem];" beforer. 
+			Or, skb being used before evaluated. It is quite serious a BUG.
+
+2009-10-29 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/lib/checksum.c:
+		The old checksum has bug, replace it , it works ,so do it.
+
+2009-11-02 Ye Yun <yun_ye@c-sky.com>
+
+	* drivers/net/cskymac.c:
+		1. In interrupt routine, clear ERR bits after handle errors;
+		2. Add statics when tx error hanpens.
+
+2009-11-02 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/mm/tlb-ck610.c:
+		1. Add func show_jtlb_table, it is used to print all the 64 jtlbs;
+		2. In func __update_tlb, delete line "write_mmu_entryhi(pid)" 
+			in the end.
+
+	* arch/csky/mm/dma-mapping.c:
+		Realize routine dma_alloc_coherent and dma_free_coherent, 
+			but they are not validated, they maybe validated by USB 
+			driver in the future.
+
+2009-11-02 Hu junshan <junshan_hu@c-sky.com>
+
+	* fs/jffs2/erase.c :
+		Deal ewith the message of"jffs2_scan_eraseblock(): Magic bitmask 0x1985 
+		not found at 0xXXXXXXXX: 0x2003 instead" when use jffs2 file system. 
+		It is a bug of GCC and we do sample change.
+
+2009-11-02 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/cskyc/kernel/vmlinux.lds.S:
+		Support config SDRAM base address. The base address rely on the macro of 
+		CONFIG_RAM_BASE:
+			. = 0x80000000 + CONFIG_RAM_BASE;
+
+2009-11-02 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/config.c:
+		Move comdline-setup from setup.c to config.c.
+
+2009-11-02 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/setup.c:
+		Add initrd rootfs autoconfig, it depends on macro 
+		CONFIG_INITRD_START_ADDR and CONFIG_INITRD_SIZE.	
+
+2009-11-02 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Kconfig:
+		Add rootfs autoconfig. Now, suport initrd, jffs2 and nfs, you can choose
+		 one of them to be your rootfs.
+		The config-menu	like :
+			Platform dependent setup
+				-->Root File System and Boot Paramete Seting
+					-->initrd
+					-->jffs2
+					-->nfs
+
+2009-11-03 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/setup.c:
+		The arg[1] in function reserve_bootmem need a phyaddress, so we change
+		 it	to deal with kernel bug when config other RAM base address then 0x0.
+
+
+2009-11-03 jiang jianyong <jianyong_jiang@c-sky.com>
+	* arch/csky/kernel/entry.S:
+		get rid of the handle of do_delay_trace
+	* arch/csky/kernel/ptrace.c:
+		implement ptrace under the struct of csky
+	* arch/csky/kernel/trap.c:
+		modify the handle of single step and breakpoint in trap_c 
+	* arch/csky/include/asm/ptrace.h:
+		exchange the value of PT_SR and PT_PC
+
+
+2009-11-04 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/mm/init.c:
+		Correct variable totalram_pages from type static to extern, 
+			that is because in mm/page_alloc.c has already defined: 
+			EXPORT_SYMBOL(totalram_pages), which is just the one we 
+			wished to use in this file.
+
+2009-11-12 Ye Yun <yun_ye@c-sky.com>
+
+	* drivers/net/Kconfig:
+		Correct CSKYMAC depending, CSKY --> CK6408EVB.
+
+2009-11-13 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/include/entry_mm.h:
+		Add assemble macros, used to switch coprocessor to MMU, 
+			Read and Write MMU registers.
+
+	* arch/csky/kernel/entry.S:
+		In entry.h, Add assemble macros, used to switch coprocessor 
+			to MMU, Read and Write MMU registers. So, here use them, 
+			instead of two colections of codes for MMU coperation 
+			in many places.
+
+	* arch/csky/kernel/head.S:
+		In entry.h, Add assemble macros, used to switch coprocessor 
+			to MMU, Read and Write MMU registers. So, here use them, 
+			instead of two colections of codes for MMU coperation 
+			in many places.
+
+2009-11-13 Ye Yun <yun_ye@c-sky.com>
+
+	* arch/csky/kernel/traps.c:
+		In trap_c and buserr_c, replace send_sig with force_sig.
+		Improve functione show_registers.
+
+2009-11-13 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/mtd/maps/Kconfig:
+		Add nor flash address and size config entry.
+	* drivers/mtd/maps/Kconfig:
+		Change obj-filename from csky_norflash.o to csky_norflash.o.
+	* drivers/mtd/maps/csky_norflsah.c:
+		Change filename from csky_norflash.c to csky_norflash.c. Add nor
+		flash address, size and buswidth config entry.
+
+2009-11-13 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/char/Kconfig:
+		Change config menu.
+	* drivers/char/Makefile:
+		Change obj filename.
+	* drivers/char/ckuart.h:
+		Optmize the code style.
+	* drivers/char/csky_serial:
+		Change file name from ck1000evb_serial.c to csky_serial.c and 
+		  ck1000evb_serial.h to csky_serial.h. 
+		Optmize the code style.
+		Change macro ck1000evb-->csky, CK1000EVB-->CSKY.
+
+2009-11-15 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Makefile:
+		Optmize this file and delete unused codes.
+
+2009-11-15 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Kconfig:
+		Optmize the config menu for our processor.
+
+2009-11-15 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/mm/tlb=ck610.c:
+		Change the MACRO CONFIG_CPU_CK660 to CONFIG_CPU_MMU_CP.
+	* arch/csky/mm/Makefile:
+		Change the MACRO CONFIG_CPU_CK640 to CONFIG_CPU_MMU.
+
+2009-11-15 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/csky.h:
+		Optimize the code style and change the MACRO CONFIG_CPU_CK640 to 
+		  CONFIG_CSKY_MMU.
+	* arch/csky/include/asm/entry.h:
+		Optimize the code style and change the MACRO CONFIG_CPU_CK660 to 
+		  CONFIG_CPU_MMU_CP.
+	* arch/csky/include/asm/mmu_context.h:
+		Change the MACRO CONFIG_CPU_CK660 to CONFIG_CPU_MMU_CP. 
+	* arch/csky/include/asm/pgtable-bits.h:
+		Change the MACRO CONFIG_CPU_CK640 to CONFIG_CSKY_MMU.
+
+2009-11-15 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/setup.c:
+		Optimize the code style, change the MACRO CONFIG_CPU_CK640 to 
+		  CONFIG_CSKY_MMU and delete some unused function rely on machine.
+
+2009-11-15 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/time.c:
+		Use new seqlock read_seqbegin and read_seqretry to replace 
+		  read_seqbegin_irqsave and read_seqretry_irqsave. Because when call 
+		  function of mach_gettimeoffset, system will bring timer interrupt. 
+		  If we used old seqlock, ststem well not hander the interrupt to update
+		  wall-time and result in obtain error time.
+
+2009-11-18 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/setup.c:
+		Don't evaluate valure to saved_command_line, because it's not initialed
+		 and well bring in bug when use boodload to load kernel. The variable
+		 saved_command_line is alloced mem at the function setup_command_line,
+		 so we need not evaluate valure in function setup_arch.
+
+
+2009-11-18 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/head.S:
+		If we  want to jump right from physical address to virtual address in
+		 start code, we need to fill up page table and map physical address to
+		 the same virtual address before we enable MMU. So change it to
+		 correspond with diferent RAM base address.
+
+2009-11-20 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/ck6408evb/config.c:
+		Add a commamd rdinit to specify the init programe in the fs.
+	* arch/csky/ck6408evb/Kconfig:
+		Add a menu to config commamd "rdinit" to specify the init programe in 
+		the fs.
+
+2009-12-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* block/as-iosched.c:
+	* net/sunrpc/svcauth_unix.c:
+	* fs/libfs.c:
+	* fs/proc/page.c:
+	* lib/vsprintf.c:
+		Add some variable initial to delete compile warning.
+	* fs/dcache.c:
+	* block/cfq-iosched.c:
+	* kernel/time/ntp.c:
+		Add return value after call BUG() to delete compile warning. 
+	* arch/csky/include/asm/page_mm.h:
+		Change PAGE_SIZE with the style of UL to delete compile warning.
+	* arch/csky/kernel/head.S:
+	* arch/csky/kernel/vmlinux.lds.S:
+		Change the start code form text section to __HEAD section and it will 
+		 delete compile warning.
+
+2009-12-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/setup.c:
+		Change the function of get and set real time clock from arch_getod to
+		 mach_hwclk.
+	* arch/csky/kernel/time.c:
+		Add an interface to get real time clock.
+	* arch/csky/ck6408evb/config.c:
+		Add an interface to get or set real time clock.
+	* arch/csky/ck6408evb/timer.c:
+		Add an interface to get or set real time clock.
+	* arch/csky/include/asm/machdep_mm.h:
+		Change the function of get and set real time clock from arch_getod to
+		 mach_hwclk.
+
+2009-12-07 Li Chunqiang <chunqiang_li@c-sky.com>
+
+	* include/asm-generic/page.h:
+	    Fix the problem that __attribute_const__ is not defined, when building
+	    uClibc-0.9.30.
+
+2009-12-09 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/machdep_mm.h:
+	* arch/csky/kernel/setup.c:
+		Modify some machine API and delete some of it.
+
+2009-12-10 Ye Yun <yun_ye@c-sky.com>
+
+	* include/linux/dirent.h:
+		 Add dirent&dirent64 to make this head file compatible 
+			to APP for linux2.4
+
+2009-12-27 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/uaccess_mm.h:
+		Change the handle of function __put_user_asm_64 when date type is 64bits
+	
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Kconfig:
+		Add config option about FPU, DSP enhanced instruction and Fast interrupt
+		 support.	
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/configs:
+		Update it.
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/asm-offset.c:
+		Add offsets of FPU and DSP context in the thread struct.
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/process.c:
+	* arch/csky/include/asm/user.h:
+		Add FPU and DSP context save in function copy_thread. And also implement
+	    kernel interface of dump_fpu.
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com> 
+
+	* arch/csky/kernel/ptrace.c:
+	* arch/csky/include/asm/ptrace.h:
+		Add some interface and let gdbserver to look up FPU and DSP regster. 
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/traps.c:
+	* arch/csky/include/asm/traps_mm.h:
+		Add FPU exception handle.
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/signal.c:
+	* arch/csky/include/asm/sigcontext.h:
+	* arch/csky/include/asm/ucontext.h:
+		Add FPU context save and retore in signal handle. 
+		Let third arg of user register signal-function pointer to ucontext and
+		it origal point NULL.
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/include/asm/processor_mm.h:
+		Define FPU context in thread_struct and let user thread select FPU in 
+		function of start_thread when define CONFIG_CPU_HAS_FPU.
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/system_mm.h:
+		Before resume, we must be confirm the FPU isn't peoduce exception. So we
+		add a function _is_fpu_busying and called by function switch_to. 
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/entry.S:
+		Add FPU exception and fast interrupt handle. And also add FPU and DSP 
+	    register switch in function resume bcause thread switch need save and 
+		restore these context.	
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/include/asm/fpu.h:
+	* arch/csky/kernel/setup.c:
+		Add FPU init function.		
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/fiq.c:
+	* arch/csky/include/asm/fiq.h:
+		Add fiq handler for c-sky cpu.
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/machdep_mm.h:
+		Add a machine interface --mach_init_FIQ for fiq handler.
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/traps_mm.h:
+		Change define VEC_XXX to VEC_USER and it maybe used in fiq handler. 
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/fiq.c:
+		This file define some board cupport function for fiq handler.	
+
+2010-03-08 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/irq.c:
+		Unique vector numbers for fast vectored interrupt requests and fast
+		 vectored interrupts Number are 64-95.
+
+2010-04-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/fpu.h:
+		will bring a error "Unexpected register 'r13' for 'cprcr/cpwcr'" when
+		 compile file arch/csky/kernel/setup.c. So we use "=b(r1)" for the
+		 embedded assemble code to eliminate this error
+	
+2010-04-21 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/config.c: 
+		Add macro #ifdef CONFIG_CPU_USE_FIQ to eliminate compile error, if 
+		not config FIQ.    
+
+2010-04-21 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/mtd/maps/csky_norflash.c:
+		Optimize the function init_csky_map add the originally code will lead 
+		to kernel dump when probe flash fail.
+
+2010-07-28 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Kconfig:
+	* arch/csky/Makefile:
+	* arch/csky/lib/math-64bits.h:
+	* arch/csky/kernel/vmlinux.ls.S:
+		Add config option of CPU-endian select. 
+
+2010-07-28 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/asm-offset.c:
+	* arch/csky/kernel/process.c:
+	* arch/csky/include/asm/thread_info_mm.h:
+		Add a member in sttuct thread_info to support TLS.
+
+2010-07-28 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/entry.S:
+	* arch/csky/kernel/sys_csky.c:
+	* arch/csky/include/asm/unistd.h:
+		Use trap 3 to get TLS and add a syscall sys_set_thread_area to set TLS.
+
+2010-07-28 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/byteorder.h:
+	* arch/csky/include/asm/elf.h:
+	* arch/csky/include/asm/stat.h:
+	* arch/csky/include/asm/unaligned.h:
+		Let the kernel support little endian format.
+
+2010-07-28 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/char/ckuart.h:
+		Move this file to arch/csky/ck6408evb/include/mach.
+	* drivers/char/csky_serial.c:
+	* drivers/net/cskymac.c:
+		Let the driver support little endian format.
+		
+2010-07-28 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/ck610mmu.h:
+		The tlb entry numbers of CPU CK610 is 128. 
+
+2010-08-02 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Makefile:
+	* arch/csky/boot/Makefile:
+	* arch/csky/boot/install.sh:
+		Use this strips to produce binary image file: Image/zImage/uImage.
+
+2010-08-02 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/irq.c:
+	* arch/csky/ck6408evb/timer.c:
+	* arch/csky/ck6408evb/include/mach/ckuart.h:
+	* arch/csky/ck6408evb/include/mach/irqs.h:
+	* arch/csky/include/asm/fiq.h:
+	* arch/csky/include/asm/irq_mm.h:
+	* arch/csky/kernel/entry.S:
+	* arch/csky/kernel/fiq.c:
+		According to CPU, the IRQ number start from 32, but according to SOC, 
+		the IRQ number start from 0. Because the driver-developer need only to 
+		know SOC, we change some to let the developer can understand the right 
+		IRQ number. So the IRQ number need not to add offset 32.
+
+2010-08-02 Hu junshan <junshan_hu@c-sky.com> 
+
+	* arch/csky/include/asm/machdep_mm.h:
+	* arch/csky/kernel/setup.c:
+		Add machine API mach_get_auto_fiqno and mach_get_auto_irqno to get 
+		 IRQ/FIQ number when use auto interrupt.	
+	* arch/csky/kernel/entry.S:
+	* arch/csky/kernel/fiq.c:
+	* arch/csky/kernel/ints.c:
+		Support auto interrupt handle.
+
+2010-08-02 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/mm/ioremap.c:
+		The arg 1 of pfn_pte is pfn not phy-address.
+
+2010-08-02 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/lib/checksum.c:
+		Support little endian.
+	* arch/csky/include/asm/checksum_mm.h: 
+		Support little endian and use assemble code to optimize performance.
+
+2010-08-05 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/shmparam.h:
+	* arch/csky/kernel/sys_csky.c:
+		Map virtual address in thrread space need 16k aligan to avoid cache
+		 probem(if cache>16k, ...).
+
+2010-09-03 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/tlb.h:
+		The function tlb_start_vma will be called when free phy-page(use syscall
+		 munmap), we need flush cache in this file. If we don't flush cache, it
+		 will lead to cache unalians when cache >=16k.
+
+2010-09-03 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/pgtable_mm.h:
+	* arch/csky/include/asm/cacheflush_mm.h:
+	* arch/csky/mm/cache.c:
+		Add __update_cache and flush all cache to avoid problem of 16k cache
+		 alians.
+
+2010-09-03 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/mmu_context.h:
+		We need to flush all cache to avoid problem of 16k cache.
+
+2010-09-21 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/mm/dma-mapping.c:
+		The implementation of the "dma_alloc_coherent()" function is buggy:
+		 It never returns the correct uncached address. Because the type of 
+		 variable ret is unsigned int *, it will calculate addr addition by 
+		 multiply 4 in UNCAC_ADDR(ret) and get error result. The right change
+		 is define ret as type void *.
+
+2010-10-22 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/processor_mm.h:
+		We will set ptregs->r7=0 in function start_thread, because __uClibc_main
+		 need this reg to distinguish between the argument "rtdl" is passed form
+		 kernel or linker.
+
+2010-11-04 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/mm/dma-mapping.c:
+	* arch/csky/include/asm/dma-mapping.h:
+	* arch/csky/include/asm/io_mm.h:
+		Implement all dma interface by reference arch-MIPS.
+
+2010-11-04 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/delay_mm.h: 
+		The origined function of udelay is error.
+
+2010-11-04 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/devices.c:
+	* arch/csky/ck6408evb/devices.h:
+	* arch/csky/ck6408evb/config.c:
+		Add usb host and LCD driver.
+
+2010-11-04 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/include/mach/board.h:
+	* arch/csky/ck6408evb/include/mach/cknand.h:
+		Add head file for Nand Flash driver.
+
+2010-11-04 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/include/mach/cklcd.h:
+	* arch/csky/ck6408evb/include/mach/fb.h:
+		Add head file for LCD driver.
+
+2010-11-04 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/include/mach/ck_iomap.h:
+	* arch/csky/ck6408evb/include/mach/irqs.h:
+		Add all base address and irq number of peripheral devices.
+
+2010-11-04 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/include/mach/ckpic.h:
+	* arch/csky/ck6408evb/include/mach/cktimer.h:
+	* arch/csky/ck6408evb/include/mach/ckuart.h:
+	* arch/csky/ck6408evb/time.c:
+		Let base address and irq number define from ck_iomap.h and irqs.h.
+
+2010-11-10 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Makefile:
+		Add parameter BJCOPYFLAGS and GZFLAGS to make right image file.
+		
+2010-11-24 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/bitops_mm.h:
+		the assemble code of function set_bit as follow:
+			ld  r6, (r14, 0)
+			......
+			mfcr    r7, psr
+			psrclr  ie
+			bseti   r6, 2
+			st  r6, (r14, 0)
+			mtcr    r7, psr
+		obviously, the operation is not atomic. So we change it by add key word
+		 volatile to let it atomic. We also change other function which not 
+		 atimic. After change the code is like that:
+			static inline void set_bit(int nr, volatile void * addr)
+			{
+				volatile unsigned int *a = (volatile unsigned int *) addr;
+				......
+				save_flags(flags); cli();
+				*a |= mask;
+				restore_flags(flags);
+			}
+
+2010-12-17 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/pgtable_mm.h:
+		Add define pgprot_noncached to delete pretreatment error.
+		Please see buzilla:BUG 286 for more info.
+
+2011-04-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/uaccess_mm.h:
+	* arch/csky/lib/memset.c:
+	* arch/csky/lib/memcpy.c:
+	* arch/csky/kernel/process.c:
+		Delete compile error for csky-gcc4.5. Because the new compiler's syntax
+		 is more strict.
+
+2011-04-20 Hu junshan <junshan_hu@c-sky.com>
+
+	* csky/kernel/vmlinux.lds.S:
+		Let the linker file support between gcc3.2 and gcc4.5.
+
+2011-07-04 Dou shaobin <shaobin_dou@c-sky.com>
+	Added support for the architecture of nommu.
+	Added support for the architecture of ck801.
+	Added the function of probing CPU type automatically.
+	Added the files page-nommu.h and cpu-probe.c
+	Rename the file c-ck610.c to cachev1.c,and the file tlb-ck610.c to tlbv1.c. 
+	Delete the Macros of PAGE_SIZE_16KB and PAGE_SIZEZ_64KB.	
+
+2011-07-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Kconfig:
+		add macro CONFIG_CMDLINE for kernel commamd line and some nommu 
+		configuration, such as consecutive memory region for malloc.
+
+2011-07-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/Kconfig:
+	* arch/csky/ck6408evb/config.c:
+	* arch/csky/include/asm/machdep.h:
+		Kernel command line pass by bootload or by config, so need not do in
+		 board init. And the board API config_BSP not need  parms.
+
+2011-07-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/csky.h:
+		Delete unused MACRO and add some nommu config MACRO. 
+
+2011-07-11 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/include/asm/Attic/highmem.h:
+	* arch/csky/include/asm/Attic/fixmap.h:
+	* arch/csky/include/asm/kmap_types.h:
+	* arch/csky/include/asm/pgtable.h:
+	* arch/csky/mm/Attic/highmem.c:
+		Add or change this file to support higmen.
+
+2011-07-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/bootinfo.h:
+	* arch/csky/include/asm/setup.h:
+	* arch/csky/mm/Attic/tlbv1.c:
+		Move all definiation from file bootinfo.h to setup.h by according 
+		 ARCH ARM.
+
+2011-07-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/cpu.h:
+	* arch/csky/kernel/Attic/cpu-probe.c:
+		change according by C-SKY Product ID SPEC Rev3.3.
+
+2011-07-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/Attic/head-nommu.S:
+	* arch/csky/kernel/head.S:
+	* arch/csky/kernel/vmlinux.lds.S:
+		Change to support bootload pass parms.
+
+2011-07-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/mm/init.c:
+	* arch/csky/mm/Attic/mmu.c:
+	* arch/csky/mm/Attic/nommu.c:
+		Partition some memory init operation such as paging_init from init.c to 		 mmu.c or nommu.c. 
+
+2011-07-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/setup.c:
+		Handle  bootload passed  parms(struct tag).
+		Optimize function setup_arch.
+		Delete bug(cat /proc/cpuinfo).
+
+2011-07-14 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/cacheflush.h:
+		For nommu cpu, the function flush_icache_range need fluash all cache, 
+		 because load flat file as data and will made some instruction in data
+		 cache.
+
+2011-07-14 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/configs/csky_defconfig:
+	* csky/configs/ck5a6-3c_defconfig:
+	* arch/csky/configs/ck6408evb_defconfig:
+		Rename csky_defconfig as ck6408evb_defconfig for MMU CPU demo
+		 configuration and add ck5a6-3c_defconfig for NOMMU CPU demo
+		 configuration.
+
+2011-07-19 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/Kconfig:
+	* arch/csky/Makefile:
+	* arch/csky/include/asm/cpu.h:
+		rename CPU ck801 as ck803.
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Kconfig:
+		Add hard refill tlb miss configuration.
+	* arch/csky/mm/fault.c:
+	* arch/csky/mm/init.c:
+	* arch/csky/include/asm/mmu_context.h:
+		when config CONFIG_MMU_HARD_REFILL, kernel not use valrable 
+		pgd_current but register CP15_29.
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/irq.c:
+	* arch/csky/ck6408evb/config.c:
+		Add function csky_get_auto_irqno to get irq number when use 
+		auto interrupt.
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/mm/Makefile:
+	* arch/csky/mm/Attic/tlbv2.c:
+	* arch/csky/mm/tlbv1.c:
+		add file tlbv2.c to support MMU V2.0.
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/traps.c:
+		delete function write_mmu_context, because not used.
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	 * arch/csky/kernel/signal.c:
+		CSKY V2 need adjust epc by 4, because trap instruction is 32bit. 
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/process.c:
+	* arch/csky/kernel/entry.S:
+		ck810 has dsp instruction, so need save/restore hi/lo register.
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/head.S:
+		ck810 has dsp BTB/BTH, so CPU init need invalid and open it.
+		optimize mmu operation.
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/ck510mmu.h:
+	* arch/csky/include/asm/ck610mmu.h:
+	* arch/csky/include/asm/ckmmuv1.h:
+	* arch/csky/include/asm/ckmmuv2.h:
+		rm file file ck510mmu.h/ck610mmu.h and add file 
+		 ckmmuv1.h/ckmmuv2.h to support all CSKY MMU version.		
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/entry.h:
+		support CSKY MMU version 2 by macro CONFIG_CPU_MMU_V1/2.
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/pgtable-bits.h:
+	* arch/csky/include/asm/pgtable-nommu.h:
+	* rch/csky/include/asm/pgtable.h:
+		MMUV2.0's tlb flags in PTE local at bit 0~6.
+
+2011-09-01 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/user.h:
+		adjust the struct user, because uClibc need use it.
+
+2011-09-23 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/lib/usercopy.c:
+	* arch/csky/include/asm/uaccess.h:
+		Driver compile with module may produce section __ex_table. 
+		This section mast align by 4 byte, so add ".align   2".
+
+2011-09-23 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Makefile:
+		compile kernel code  need not produce DSP and float instruction.
+
+2011-09-23 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/net/cskymac.c:
+		function xx_xmit need unlock before return.
+
+2011-10-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/mm/mmu.c:
+	* arch/csky/mm/fault.c:
+	* arch/csky/mm/cachev1.c:
+	* arch/csky/include/asm/cacheflush.h:
+	* arch/csky/include/asm/mmu_context.h:
+	* arch/csky/include/asm/pgalloc.h:
+	* arch/csky/include/asm/pgtable.h:
+	* arch/csky/include/asm/tlb.h:
+	* arch/csky/kernel/entry.S:
+		ck810's tlbmiss hardrefill need fill phy address, and OS write 
+		pgd/pte need clear cache.
+
+2011-10-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/asm-offsets.c:
+	* arch/csky/kernel/ptrace.c:
+	* arch/csky/kernel/traps.c:
+	* arch/csky/include/asm/ptrace.h:
+	* arch/csky/include/asm/entry.h:
+		csky v2 need save/restore reg hi/lo when handle interrupt and
+		 syscall, so change struct pt_regs.
+
+2011-10-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/process.c:
+	* arch/csky/include/asm/ptrace.h:
+	* arch/csky/include/asm/entry.h:
+	* arch/csky/kernel/entry.S:
+		optimize the task context and redefine struct switch_struct 
+		because the task switch need not save/restore destroyed register
+		 like r2~r7.
+
+2011-10-11 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/kernel/signal.c:
+	* arch/csky/include/asm/ucontext.h:
+	* arch/csky/include/asm/sigcontext.h:
+	* arch/csky/kernel/entry.S:
+		optimize the signal handle by reference arch arm and not use 
+		struct switch_struct.
+
+2011-10-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/irqflags.h:
+	* arch/csky/include/asm/system.h:
+	* arch/csky/include/asm/atomic.h:
+	* arch/csky/include/asm/bitops.h:
+		move the macros loca_irq_xxx in file asm/irqflags.h and delete 
+		the macro sti, cli, save_flags ande soon on.
+
+2011-10-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Kconfig:
+	* arch/csky/Makefile:
+	* arch/csky/configs/ckm5208_defconfig:
+	* arch/csky/ckm5208/: 
+		add board ckm5208.
+
+2011-10-11 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/mm/nommu.c:
+		the function setup_memory need setup memory region when bootload
+		 or commandline not setup memory region.
+
+2011-11-10 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/config.c:
+	* arch/csky/ck6408evb/devices.c:
+		change to support uart and LCD drivers.
+
+2011-11-10 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/ck6408evb/irq.c:
+	* arch/csky/ckm5208/irq.c:
+		add init call set_irq_handler(i, handle_level_irq); for all irq
+		 to support SHARED IRQ.
+
+2011-11-10 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/pgtable-nommu.h:
+	* arch/csky/mm/mmap.c:
+		add function get_fb_unmaped_area for nommu CPU.
+
+2011-11-10 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/setup.c:
+		add framebuffer console support.
+
+2011-11-10 Hu junshan <junshan_hu@c-sky.com>
+	
+	* ipc/shm.c:
+		Change to support shm for nommu.
+
+2011-11-10 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/video/Kconfig:
+	* drivers/video/Makefile:
+	* drivers/video/csky_fb.c:
+	* drivers/video/csky_fb.h:
+		add  csky fb driver.
+
+2011-11-10 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/serial/csky_uart.c:
+	* drivers/serial/Makefile:
+	* drivers/serial/Kconfig:
+		add  csky uart driver.
+
+2011-11-24 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/Kconfig:
+	* arch/csky/kernel/alignment.c:
+	* arch/csky/kernel/traps.c:
+	* arch/csky/kernel/Makefile:
+		Add file alignment.c and move the aligment exception handler 
+		from trap.c to it, it's control by macro 
+		CONFIG_SOFT_HANDMISSALIGN.
+	
+2011-11-24 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/mtd/maps/csky_norflash.c:
+	* drivers/mtd/maps/Makefile:
+	* drivers/mtd/maps/Kconfig:
+		Add csky norflash driver.
+
+2011-11-24 Hu junshan <junshan_hu@c-sky.com>	
+
+	* drivers/mtd/chips/jedec_probe.c:
+	* drivers/mtd/chips/cfi_cmdset_0002.c:
+		Add norflash chip sst39vf6401b support.
+		more info please reference:
+		  http://www.pubbs.net/200906/kernel/36263-add-support-for-the-sst-39vf3202-39vf6401b-and-39vf6402b-flash-chips.html
+		  http://blog.tianya.cn/blogger/post_show.asp?BlogID=803354&PostID=19231483
+
+2011-11-24 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/mtd/nand/csky_nand.c:
+	* drivers/mtd/nand/Makefile:
+	* drivers/mtd/nand/Kconfig:
+		Add csky nand driver.
+
+2011-12-14 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/uaccess.h:
+		Fix bug when call get_user like get_user(x, p++);  maybe add 2.
+	
+2011-12-14 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/usb/Kconfig:
+	* drivers/usb/host/ohci-hcd.c:
+	* drivers/usb/host/ohci-csky.c:
+	* drivers/usb/host/ohci.h:
+		add csky usb host driver. 
+
+2011-12-14 Hu junshan <junshan_hu@c-sky.com>
+
+	* drivers/video/csky_fb.c:
+		Fix csky fb driver bug.
+
+2012-01-18 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/fpu.h:
+	* arch/csky/kernel/signal.c:
+		fix embedded asemble code bug.
+
+2012-05-22 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/include/asm/cache.h:
+		We use MACRO ARCH_SLAB_MINALIGN to let the stack pointer align
+		with 8 for NOMMU's CPU.
+
+2012-05-22 Hu junshan <junshan_hu@c-sky.com>
+
+	* arch/csky/kernel/signal.c:
+		sigsuspen need return sig number, because futher thread need it
+
+2012-05-22 Hu junshan <junshan_hu@c-sky.com>
+	
+	* arch/csky/ck6408evb/include/mach/ckspi.h:
+	* arch/csky/ck6408evb/config.c:
+	* arch/csky/ck6408evb/device.c:
+	* drivers/spi/spi_ck6408.c:
+		add csky spi driver. 

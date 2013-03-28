@@ -1,0 +1,9 @@
+# arch/csky/ck6408evb/Kconfig
+#
+# Copyright (C) 2009, C-SKY Microsystems Co., Ltd. (www.c-sky.com) 
+#
+# Licensed under GPLv2
+
+if CK6408EVB
+
+endif
