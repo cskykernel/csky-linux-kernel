@@ -1363,6 +1363,30 @@ config SERIAL_QE
 	  This driver supports the QE serial ports on Freescale embedded
 	  PowerPC that contain a QUICC Engine.
 
+config SERIAL_CSKY
+    bool "C-SKY serial support"
+    depends on CSKY 
+    select SERIAL_CORE
+    help
+      This serial driver supports the Freescale Coldfire serial ports.
+
+config SERIAL_CSKY_BAUDRATE
+    int "Default baudrate for c-sky serial ports"
+    depends on SERIAL_CSKY
+    default 115200
+    help
+      This setting lets you define what the default baudrate is for the
+      ColdFire serial ports. The usual default varies from board to board,
+      and this setting is a way of catering for that.
+
+config SERIAL_CSKY_CONSOLE 
+    bool "C-SKY serial console support"
+    depends on SERIAL_CSKY
+    select SERIAL_CORE_CONSOLE
+    help 
+      Enable a ColdFire internal serial port to be the system console.
+
+
 config SERIAL_SC26XX
 	tristate "SC2681/SC2692 serial port support"
 	depends on SNI_RM

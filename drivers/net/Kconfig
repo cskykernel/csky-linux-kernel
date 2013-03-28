@@ -1327,6 +1327,13 @@ config APRICOT
 	  To compile this driver as a module, choose M here. The module
 	  will be called apricot.
 
+config CSKYMAC
+    tristate "CSKY mac 10/100baseT support"
+    depends on CK6408EVB || CKM5208
+    help
+      If you are configing a CSKY product and wanting to surport net,
+      select this option to make your hardware be drived.
+
 config B44
 	tristate "Broadcom 440x/47xx ethernet support"
 	depends on SSB_POSSIBLE && HAS_DMA

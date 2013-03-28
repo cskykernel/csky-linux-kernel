@@ -114,6 +114,44 @@ config SERIAL_NONSTANDARD
 
 	  Most people can say N here.
 
+config CSKY_SERIAL
+        bool "C-SKY serial support"
+        depends on CK6408EVB || CKM5208
+        ---help---
+          This driver supports the entire family of CSKY in  C-SKY
+          Microsystems Co., Ltd.
+
+config CSKY_SERIAL_CONSOLE
+        bool "Support for console on C-SKY serial"
+        depends on CSKY_SERIAL
+        default y
+
+choice
+        prompt "Console with Uart Port"
+        depends on CSKY_SERIAL
+        depends on CSKY_SERIAL_CONSOLE
+        default CKSKY_SERIAL_CONSOLE_UART1
+
+config CSKY_SERIAL_CONSOLE_UART0
+        bool "UART0"
+
+config CSKY_SERIAL_CONSOLE_UART1
+        bool "UART1"
+
+config CSKY_SERIAL_CONSOLE_UART2
+        bool "UART2"
+
+config CSKY_SERIAL_CONSOLE_UART3
+        bool "UART3"
+endchoice
+
+config CSKY_SERIAL_BAUDRATE
+        int "Console Default Baudrate"
+        depends on CSKY_SERIAL_CONSOLE
+        default 19200
+
+
+
 config COMPUTONE
 	tristate "Computone IntelliPort Plus serial support"
 	depends on SERIAL_NONSTANDARD && (ISA || EISA || PCI)
